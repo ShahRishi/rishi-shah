@@ -4,13 +4,8 @@ import {
   Typography, Button, Toolbar, Container, Box
 } from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineDot } from '@mui/lab';
+
 
 const pages = ['About', 'Experience', 'Projects'];
 
@@ -27,27 +22,6 @@ const projects = [
   },
   // ... add more projects as needed
 ];
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#556b2f',
-    },
-    secondary: {
-      main: '#8b4513',
-    },
-    background: {
-      default: '#fafafa',
-    },
-    text: {
-      primary: '#556b2f',
-      secondary: '#8b4513',
-    }
-  },
-  typography: {
-    // ... You can customize the typography if needed
-  },
-});
 
 function ProjectCard({ title, description, imageUrl }) {
   return (
@@ -120,7 +94,6 @@ function App() {
 
   return (
     <>
-    <ThemeProvider theme={theme}>
       <AppBar position="sticky">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>Rishi Shah</Typography>
@@ -212,7 +185,6 @@ function App() {
           ))}
         </Grid>
       </Container>
-      </ThemeProvider>
     </>
   );
 }
