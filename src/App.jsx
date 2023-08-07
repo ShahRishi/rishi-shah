@@ -1,10 +1,14 @@
 import * as React from 'react';
 import {
-  AppBar, Card, CardContent, CardActionArea, Grid, List, ListItem, ListItemText,
+  AppBar, Card, CardContent, CardActionArea, Grid, List, ListItem, ListItemIcon, ListItemText, Chip,
   Typography, Button, Toolbar, Container, Box
 } from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineDot } from '@mui/lab';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import '@fontsource/lato';
+import experiences from './assets/experiences';
+
 
 
 const pages = ['About', 'Experience', 'Projects'];
@@ -23,7 +27,9 @@ const projects = [
   // ... add more projects as needed
 ];
 
-function ProjectCard({ title, description, imageUrl }) {
+
+
+function ProjectCard({ title, description }) {
   return (
     <Card
       sx={{
@@ -49,7 +55,7 @@ function ProjectCard({ title, description, imageUrl }) {
 }
 
 function ExperienceCard(props) {
-  const { company, duration, tasks, position } = props;
+  const { company, duration, tasks, position, role, techStack } = props;
 
   const cardAlignment = position === 'left'
     ? { display: 'flex', justifyContent: 'flex-end' }
@@ -63,23 +69,48 @@ function ExperienceCard(props) {
             {company}
           </Typography>
           <Typography variant="body2" color="textSecondary" mb={2}>
+            {role}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" mb={2}>
             {duration}
           </Typography>
           <List dense>
             {tasks.map((task, index) => (
               <ListItem key={index} disablePadding>
+                <ListItemIcon style={{ minWidth: '25px' }}>
+                  <span style={{ fontSize: '2em' }}>&bull;</span>
+                </ListItemIcon>
                 <ListItemText primary={task} />
               </ListItem>
             ))}
           </List>
+
+          {/* Tech stack bubbles */}
+          <div style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap' }}>
+            {techStack.map((tech, index) => (
+              <Chip 
+                key={index} 
+                label={tech} 
+                size="small" 
+                style={{ margin: '5px' }}
+              />
+            ))}
+          </div>
         </CardContent>
       </Card>
     </Box>
   );
 }
 
+
 function App() {
-  const theme = useTheme();
+
+  const theme = createTheme({
+    typography: {
+      fontFamily: 'lato',
+    },
+  });
+
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const aboutRef = React.useRef(null);
@@ -88,15 +119,16 @@ function App() {
 
   const navigateToSection = (sectionRef) => {
     if (sectionRef && sectionRef.current) {
-      sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      sectionRef.current.scrollIntoView({ behavior: 'smooth'});
     }
   };
 
   return (
     <>
-      <AppBar position="sticky">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>Rishi Shah</Typography>
+    <ThemeProvider theme={theme}>
+    <Box sx={{ bgcolor: '#e6e1d3' }}>
+      <AppBar position="sticky" sx={{ bgcolor: '#025906', borderRadius: 2, opacity: 0.5, fontWeight: 1000 }}> 
+        <Toolbar sx={{ justifyContent: 'center'}}>
           {pages.map((page) => {
             let sectionRef;
             if (page === "About") sectionRef = aboutRef;
@@ -116,58 +148,33 @@ function App() {
       <Container ref={aboutRef}>
         <Box sx={{ mt: 4, pt: 3, pb: 3 }}>
           <Typography variant="h4" gutterBottom>
-            Hello! My name is Rishi.
+            Hello, I'm Rishi!
           </Typography>
           <Typography variant="body1">
-            I'm a passionate software developer with a love for all things tech!
+            I'm a rising senior at Boston University looking for new grad positions 
           </Typography>
         </Box>
       </Container>
 
       <Container ref={experienceRef}>
-        <Typography variant="h5" gutterBottom align="left" sx={{ mt: 4, mb: 3 }}>
-          Experience
-        </Typography>
+      <Typography variant="h5" gutterBottom align="left" sx={{ mt: 4, mb: 3 }}>
+        Experience
+      </Typography>
 
-        <Timeline position={isMobile ? 'right' : 'alternate-reverse'}>
-          <TimelineItem>
+      <Timeline position={isMobile ? 'right' : 'alternate-reverse'}>
+        {experiences.map((exp, index) => (
+          <TimelineItem key={index}>
             <TimelineSeparator>
               <TimelineDot />
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              <ExperienceCard
-                company="Google"
-                duration="Jan 2022 - Present"
-                tasks={[
-                  "Developed feature X in the main app.",
-                  "Collaborated with design team to enhance UI/UX.",
-                  "Optimized backend API calls for better performance."
-                ]}
-                position="left"
-              />
+              <ExperienceCard {...exp} />
             </TimelineContent>
           </TimelineItem>
-          <TimelineItem>
-            <TimelineSeparator>
-              <TimelineDot />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <ExperienceCard
-                company="Apple"
-                duration="Jan 2021 - Dec 2021"
-                tasks={[
-                  "Worked on iOS app optimization.",
-                  "Introduced new AR features.",
-                  "Improved security protocols."
-                ]}
-                position="right"
-              />
-            </TimelineContent>
-          </TimelineItem>
-        </Timeline>
-      </Container>
+        ))}
+      </Timeline>
+    </Container>
 
       <Container ref={projectsRef}>
         <Typography variant="h5" gutterBottom align="left" sx={{ mt: 4, mb: 3 }}>
@@ -185,6 +192,8 @@ function App() {
           ))}
         </Grid>
       </Container>
+    </Box>
+    </ThemeProvider>
     </>
   );
 }
